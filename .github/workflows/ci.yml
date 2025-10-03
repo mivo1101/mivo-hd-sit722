@@ -83,8 +83,8 @@ jobs:
           POSTGRES_PORT: 5432
           POSTGRES_DB: userdb
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        run: pytest tests --maxfail=1 --disable-warnings -q
+          PPYTHONPATH: ./backend/user_service
+        run: pytest backend/user_service/tests --maxfail=1 --disable-warnings -q
 
       - name: Run song_service tests
         working-directory: backend/song_service
@@ -94,7 +94,8 @@ jobs:
           POSTGRES_DB: songdb
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-        run: pytest tests --maxfail=1 --disable-warnings -q
+          PYTHONPATH: ./backend/song_service
+        run: pytest backend/song_service/tests --maxfail=1 --disable-warnings -q
 
       - name: Run playlist_service tests
         working-directory: backend/playlist_service
@@ -104,7 +105,8 @@ jobs:
           POSTGRES_DB: playlistdb
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-        run: pytest tests --maxfail=1 --disable-warnings -q
+          PYTHONPATH: ./backend/playlist_service
+        run: pytest backend/playlist_service/tests --maxfail=1 --disable-warnings -q
 
   build_and_push_images:
     runs-on: ubuntu-latest
