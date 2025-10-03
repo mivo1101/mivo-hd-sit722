@@ -130,7 +130,12 @@ jobs:
       - name: Terraform Init & Apply
         run: |
           cd terraform
-          terraform init         
+          terraform init \
+            -backend-config="resource_group_name=music-rg" \
+            -backend-config="storage_account_name=mimusicstorage" \
+            -backend-config="container_name=tfstate" \
+            -backend-config="key=terraform.tfstate"
+      
           terraform import -ignore-remote-version azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg
           terraform import -ignore-remote-version azurerm_container_registry.acr /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.ContainerRegistry/registries/mimusicacr
           terraform import -ignore-remote-version azurerm_storage_account.storage /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.Storage/storageAccounts/mimusicstorage
