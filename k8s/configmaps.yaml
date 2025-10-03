@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: music-config-aks
+
+data:
+  USER_DB_NAME: "userdb"
+  SONG_DB_NAME: "songdb"
+  PLAYLIST_DB_NAME: "playlistdb"
+
+  AZURE_STORAGE_CONTAINER_NAME: "music-container"
+  AZURE_SAS_TOKEN_EXPIRY_HOURS: "24"
+
+  RABBITMQ_HOST: "rabbitmq-w10-aks"

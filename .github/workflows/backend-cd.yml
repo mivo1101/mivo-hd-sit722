@@ -1,0 +1,51 @@
+# .github/workflows/backend-cd.yml
+
+name: Backend CD - Deploy Backend to AKS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_backend:
+    runs-on: ubuntu-latest
+    environment: Production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
+
+      - name: Set Kubernetes context
+        run: |
+          az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
+
+      - name: Deploy Backend to Production
+        run: |
+          kubectl apply -f k8s/configmaps.yaml -n production
+          kubectl apply -f k8s/secrets.yaml -n production
+          kubectl apply -f k8s/rabbitmq.yaml -n production
+          kubectl apply -f k8s/user-db.yaml -n production
+          kubectl apply -f k8s/song-db.yaml -n production
+          kubectl apply -f k8s/playlist-db.yaml -n production
+          kubectl apply -f k8s/user-service.yaml -n production
+          kubectl apply -f k8s/song-service.yaml -n production
+          kubectl apply -f k8s/playlist-service.yaml -n production
+
+      - name: Wait for Backend LoadBalancer IPs
+        run: |
+          echo "Waiting for LoadBalancer IPs..."
+          sleep 30
+          for service in user-service song-service playlist-service; do
+            kubectl get svc $service -n production
+          done
+
+      - name: Logout from Azure
+        run: az logout
+        if: always()

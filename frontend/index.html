@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Music Streaming Platform</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                margin: 0;
+                padding: 0;
+                background: #f0f8ff; /* subtle light blue background */
+            }
+            h1 {
+                color: #38A6F3; /* main title blue */
+                margin: 20px 0;
+            }
+            h2 {
+                color: #38A6F3; /* section titles blue */
+                margin: 20px 0;
+            }
+            span.user-name {
+                color: #ff69b4; /* Hello name pink */
+            }
+            form {
+                margin: 15px auto;
+                max-width: 400px;
+            }
+            input, button {
+                padding: 10px;
+                margin: 5px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                font-size: 16px;
+            }
+            input {
+                width: 80%;
+            }
+            button {
+                width: 150px;
+                background: #00bfff;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+            button:hover {
+                background: #FDD602;
+            }
+            .section {
+                display: block;
+                padding: 20px;
+                border-radius: 10px;
+                margin: 10px auto;
+                max-width: 500px;
+                background: #ffffff;
+            }
+            #message-box {
+                margin: 10px;
+                font-weight: bold;
+            }
+            #song-list, #playlist-list, #song-options {
+                margin-top: 20px;
+                text-align: left;
+            }
+            .playlist {
+                background: #f5f5f5;
+                border-radius: 10px;
+                margin: 10px 0;
+                padding: 10px;
+                box-shadow: 0 0 3px rgba(0,0,0,0.1);
+            }
+        </style>
+    </head>
+    <body>
+
+    <h1>Music Streaming Platform</h1>
+    <div id="message-box"></div>
+
+    <!-- ================= USER SECTION ================= -->
+    <div id="section-user" class="section">
+        <h2>Welcome</h2>
+        <p>Please enter your name to start</p>
+        <form id="user-form">
+            <input type="text" id="user-name" placeholder="Your name" required>
+            <br>
+            <button type="submit">Enter Platform</button>
+        </form>
+    </div>
+
+    <!-- ================= SONG SECTION ================= -->
+    <div id="section-songs" class="section">
+        <h2>Hello, <span id="user-name-display" class="user-name"></span> 👋</h2>
+        <p>Add your favourite songs below:</p>
+        <form id="song-form">
+            <input type="text" id="song-title" placeholder="Song Title" required><br>
+            <input type="text" id="song-artist" placeholder="Artist" required><br>
+            <input type="text" id="song-duration" placeholder="Duration (e.g., 3:45)" required><br>
+            <button type="submit">Add</button>
+        </form>
+        <div id="song-list"></div>
+        <br>
+        <button id="go-to-playlists">Create Playlists</button>
+    </div>
+
+    <!-- ================= PLAYLIST CREATION SECTION ================= -->
+    <div id="section-playlists" class="section">
+        <h2>Create Playlists</h2>
+        <form id="playlist-form">
+            <input type="text" id="playlist-name" placeholder="Playlist Name" required>
+            <button type="submit">Create</button>
+        </form>
+
+        <p>Select songs to add to this playlist:</p>
+        <div id="song-options"></div> <!-- dynamically populated with existing songs -->
+        <button id="add-songs-to-playlist">Add</button>
+
+        <div id="playlist-list"></div>
+        <br>
+        <button id="go-to-my-playlists">View My Playlists</button>
+        <button id="back-to-songs">Back to Songs</button>
+    </div>
+
+    <!-- ================= MY PLAYLISTS SECTION ================= -->
+    <div id="section-myplaylists" class="section">
+        <h2><span id="user-name-display2" class="user-name"></span>'s Playlists 🎶</h2>
+        <div id="playlist-list-my"></div>
+        <br>
+        <button id="back-to-playlist-creation">Create Playlists</button>
+        <button id="back-to-songs2">Add Songs</button>
+    </div>
+
+    <script src="main.js"></script>
+    </body>
+</html>

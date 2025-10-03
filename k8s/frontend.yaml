@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-aks
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend-container
+        image: mimusicacr.azurecr.io/frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: USER_API_BASE_URL
+          value: http://user-service-aks:8000
+        - name: SONG_API_BASE_URL
+          value: http://song-service-aks:8001
+        - name: PLAYLIST_API_BASE_URL
+          value: http://playlist-service-aks:8002
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-aks
+  labels:
+    app: frontend
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer

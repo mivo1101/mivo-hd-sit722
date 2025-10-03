@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playlist-db-deployment-aks
+  labels:
+    app: playlist-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: playlist-db
+  template:
+    metadata:
+      labels:
+        app: playlist-db
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: music-config-aks
+              key: PLAYLIST_DB_NAME
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: music-secrets-aks
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: music-secrets-aks
+              key: POSTGRES_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: playlist-db-service-aks
+  labels:
+    app: playlist-db
+spec:
+  selector:
+    app: playlist-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP

@@ -1,0 +1,45 @@
+# .github/workflows/frontend-cd.yml
+
+name: Frontend CD - Deploy Frontend to AKS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  call_backend_cd:
+    uses: ./.github/workflows/backend-cd.yml
+    secrets: inherit
+
+  deploy_frontend:
+    runs-on: ubuntu-latest
+    needs: call_backend_cd
+    environment: Production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set Kubernetes context
+        run: |
+          az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
+
+      - name: Inject Backend service names into frontend/main.js
+        run: |
+          sed -i "s|_USER_API_URL_|user-service|g" frontend/main.js
+          sed -i "s|_SONG_API_URL_|song-service|g" frontend/main.js
+          sed -i "s|_PLAYLIST_API_URL_|playlist-service|g" frontend/main.js
+
+      - name: Deploy Frontend to Production
+        run: |
+          kubectl apply -f k8s/frontend.yaml -n production
+
+      - name: Logout from Azure
+        run: az logout
+        if: always()

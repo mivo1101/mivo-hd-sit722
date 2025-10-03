@@ -1,0 +1,73 @@
+# .github/workflows/staging.yml
+
+name: Staging - Deploy Backend and Frontend to Staging Environment
+
+on:
+  workflow_run:
+    workflows: ["CI - Test, Build, and Push Images to ACR"]
+    types:
+      - completed
+
+jobs:
+  deploy_backend_staging:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set AKS Context
+        run: |
+          az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
+
+      - name: Create Staging Namespace
+        run: |
+          kubectl create namespace staging --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy Backend to Staging Environment
+        run: |
+          kubectl apply -f k8s/configmaps.yaml -n staging
+          kubectl apply -f k8s/secrets.yaml -n staging
+          kubectl apply -f k8s/rabbitmq.yaml -n staging
+          kubectl apply -f k8s/user-db.yaml -n staging
+          kubectl apply -f k8s/song-db.yaml -n staging
+          kubectl apply -f k8s/playlist-db.yaml -n staging
+          kubectl apply -f k8s/user-service.yaml -n staging
+          kubectl apply -f k8s/song-service.yaml -n staging
+          kubectl apply -f k8s/playlist-service.yaml -n staging
+
+      - name: Logout from Azure
+        run: az logout
+        if: always()
+
+  deploy_frontend_staging:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    needs: deploy_backend_staging
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set AKS Context
+        run: |
+          az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }} --overwrite-existing
+
+      - name: Deploy Frontend to Staging Environment
+        run: |
+          kubectl apply -f k8s/frontend.yaml -n staging
+
+      - name: Logout from Azure
+        run: az logout
+        if: always()

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playlist-service-aks
+  labels:
+    app: playlist-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: playlist-service
+  template:
+    metadata:
+      labels:
+        app: playlist-service
+    spec:
+      containers:
+      - name: playlist-service-container
+        image: mimusicacr.azurecr.io/playlist-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8002
+        env:
+        - name: POSTGRES_HOST
+          value: playlist-db-service-aks
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: music-config-aks
+              key: PLAYLIST_DB_NAME
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: music-secrets-aks
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: music-secrets-aks
+              key: POSTGRES_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: playlist-service-aks
+  labels:
+    app: playlist-service
+spec:
+  selector:
+    app: playlist-service
+  ports:
+    - protocol: TCP
+      port: 8002
+      targetPort: 8002
+  type: LoadBalancer
