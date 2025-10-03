@@ -85,7 +85,7 @@ jobs:
           POSTGRES_DB: userdb
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          PYTHONPATH: ${{ github.workspace }}/backend/user_service
+          PYTHONPATH: .
         run: pytest tests --maxfail=1 --disable-warnings -q
 
       - name: Run song_service tests
@@ -96,7 +96,7 @@ jobs:
           POSTGRES_DB: songdb
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          PYTHONPATH: ${{ github.workspace }}/backend/song_service
+          PYTHONPATH: .
         run: pytest tests --maxfail=1 --disable-warnings -q
 
       - name: Run playlist_service tests
@@ -107,7 +107,7 @@ jobs:
           POSTGRES_DB: playlistdb
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          PYTHONPATH: ${{ github.workspace }}/backend/playlist_service
+          PYTHONPATH: .
         run: pytest tests --maxfail=1 --disable-warnings -q
 
   build_and_push_images:
