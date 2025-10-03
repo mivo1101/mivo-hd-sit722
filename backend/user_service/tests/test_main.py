@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from app.main import app
-from app.db import Base, engine, SessionLocal
+from app.database import Base, engine, SessionLocal
 from app.models import User
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import OperationalError
