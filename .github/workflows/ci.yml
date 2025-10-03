@@ -145,12 +145,14 @@ jobs:
           STORAGE_ACCOUNT_KEY=$(terraform output -raw storage_account_key 2>/dev/null | tr -d '\r')
           STORAGE_CONTAINER_NAME=$(terraform output -raw storage_container_name 2>/dev/null | tr -d '\r')
 
-          echo "ACR_LOGIN_SERVER=$ACR_LOGIN_SERVER" >> $GITHUB_ENV
-          echo "AKS_CLUSTER_NAME=$AKS_CLUSTER_NAME" >> $GITHUB_ENV
-          echo "AKS_RESOURCE_GROUP=$AKS_RESOURCE_GROUP" >> $GITHUB_ENV
-          echo "STORAGE_ACCOUNT_NAME=$STORAGE_ACCOUNT_NAME" >> $GITHUB_ENV
-          echo "STORAGE_ACCOUNT_KEY=$STORAGE_ACCOUNT_KEY" >> $GITHUB_ENV
-          echo "STORAGE_CONTAINER_NAME=$STORAGE_CONTAINER_NAME" >> $GITHUB_ENV
+          {
+            echo "ACR_LOGIN_SERVER=$ACR_LOGIN_SERVER"
+            echo "AKS_CLUSTER_NAME=$AKS_CLUSTER_NAME"
+            echo "AKS_RESOURCE_GROUP=$AKS_RESOURCE_GROUP"
+            echo "STORAGE_ACCOUNT_NAME=$STORAGE_ACCOUNT_NAME"
+            echo "STORAGE_ACCOUNT_KEY=$STORAGE_ACCOUNT_KEY"
+            echo "STORAGE_CONTAINER_NAME=$STORAGE_CONTAINER_NAME"
+          } >> $GITHUB_ENV
 
 
       - name: Set up QEMU and Buildx
