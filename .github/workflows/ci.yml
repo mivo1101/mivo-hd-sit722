@@ -131,6 +131,7 @@ jobs:
         run: |
           cd terraform
           terraform init
+          
           terraform import -ignore-remote-version azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg
           terraform import -ignore-remote-version azurerm_container_registry.acr /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.ContainerRegistry/registries/mimusicacr
           terraform import -ignore-remote-version azurerm_storage_account.storage /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.Storage/storageAccounts/mimusicstorage
