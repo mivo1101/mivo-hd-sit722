@@ -158,23 +158,25 @@ jobs:
             exit 1
           fi
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
-      - name: Set up QEMU and Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Login to ACR
-        run: az acr login --name ${{ env.ACR_LOGIN_SERVER }}
+        run: az acr login --name ${{ secrets.ACR_LOGIN_SERVER }}
 
       - name: Build service images
         run: |
-          docker build -t ${{ env.ACR_LOGIN_SERVER }}/user-service:latest ./backend/user_service/
-          docker build -t ${{ env.ACR_LOGIN_SERVER }}/song-service:latest ./backend/song_service/
-          docker build -t ${{ env.ACR_LOGIN_SERVER }}/playlist-service:latest ./backend/playlist_service/
-          docker build -t ${{ env.ACR_LOGIN_SERVER }}/frontend:latest ./frontend/
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/user-service:latest ./backend/user_service/
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/song-service:latest ./backend/song_service/
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/playlist-service:latest ./backend/playlist_service/
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/frontend:latest ./frontend/
 
       - name: Push service images to ACR
         run: |
-          docker push ${{ env.ACR_LOGIN_SERVER }}/user-service:latest
-          docker push ${{ env.ACR_LOGIN_SERVER }}/song-service:latest
-          docker push ${{ env.ACR_LOGIN_SERVER }}/playlist-service:latest
-          docker push ${{ env.ACR_LOGIN_SERVER }}/frontend:latest
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/user-service:latest
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/song-service:latest
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/playlist-service:latest
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/frontend:latest
