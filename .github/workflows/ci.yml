@@ -136,14 +136,6 @@ jobs:
             -backend-config="container_name=tfstate" \
             -backend-config="key=terraform.tfstate"
       
-          terraform import -ignore-remote-version azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg
-          terraform import -ignore-remote-version azurerm_container_registry.acr /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.ContainerRegistry/registries/mimusicacr
-          terraform import -ignore-remote-version azurerm_storage_account.storage /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.Storage/storageAccounts/mimusicstorage
-          terraform import -ignore-remote-version azurerm_storage_container.music_container "https://mimusicstorage.blob.core.windows.net/music-container"
-          terraform import -ignore-remote-version azurerm_log_analytics_workspace.law /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.OperationalInsights/workspaces/music-law
-          terraform import -ignore-remote-version azurerm_kubernetes_cluster.aks /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.ContainerService/managedClusters/music-aks
-
-
           terraform apply -auto-approve
 
           echo "ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
