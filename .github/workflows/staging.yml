@@ -24,7 +24,7 @@ jobs:
 
       - name: Set AKS Context
         run: |
-          az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
+          az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }} --overwrite-existing
 
       - name: Create Staging Namespace
         run: |
