@@ -127,7 +127,7 @@ jobs:
         with:
           terraform_version: 1.13.3
 
-      - name: Terraform Init & Apply
+      - name: Terraform Init
         run: |
           cd terraform
           terraform init \
@@ -135,24 +135,28 @@ jobs:
             -backend-config="storage_account_name=mimusicstorage" \
             -backend-config="container_name=tfstate" \
             -backend-config="key=terraform.tfstate"
-      
+
+      - name: Terraform Apply
+        id: terraform
+        run: |
+          cd terraform
           terraform apply -auto-approve
+          ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server | tr -d '\n' | sed 's/[^a-zA-Z0-9.-]//g')
+          AKS_CLUSTER_NAME=$(terraform output -raw aks_cluster_name | tr -d '\n' | sed 's/[^a-zA-Z0-9.-]//g')
+          AKS_RESOURCE_GROUP=$(terraform output -raw resource_group_name | tr -d '\n' | sed 's/[^a-zA-Z0-9.-]//g')
+          echo "ACR_LOGIN_SERVER=$ACR_LOGIN_SERVER" >> $GITHUB_ENV
+          echo "AKS_CLUSTER_NAME=$AKS_CLUSTER_NAME" >> $GITHUB_ENV
+          echo "AKS_RESOURCE_GROUP=$AKS_RESOURCE_GROUP" >> $GITHUB_ENV
 
-          ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server 2>/dev/null | tr -d '\r')
-          AKS_CLUSTER_NAME=$(terraform output -raw aks_cluster_name 2>/dev/null | tr -d '\r')
-          AKS_RESOURCE_GROUP=$(terraform output -raw resource_group_name 2>/dev/null | tr -d '\r')
-          STORAGE_ACCOUNT_NAME=$(terraform output -raw storage_account_name 2>/dev/null | tr -d '\r')
-          STORAGE_ACCOUNT_KEY=$(terraform output -raw storage_account_key 2>/dev/null | tr -d '\r')
-          STORAGE_CONTAINER_NAME=$(terraform output -raw storage_container_name 2>/dev/null | tr -d '\r')
-
-          {
-            echo "ACR_LOGIN_SERVER=$ACR_LOGIN_SERVER"
-            echo "AKS_CLUSTER_NAME=$AKS_CLUSTER_NAME"
-            echo "AKS_RESOURCE_GROUP=$AKS_RESOURCE_GROUP"
-            echo "STORAGE_ACCOUNT_NAME=$STORAGE_ACCOUNT_NAME"
-            echo "STORAGE_ACCOUNT_KEY=$STORAGE_ACCOUNT_KEY"
-            echo "STORAGE_CONTAINER_NAME=$STORAGE_CONTAINER_NAME"
-          } >> $GITHUB_ENV
+      - name: Verify Terraform Outputs
+        run: |
+          echo "ACR_LOGIN_SERVER: ${{ env.ACR_LOGIN_SERVER }}"
+          echo "AKS_CLUSTER_NAME: ${{ env.AKS_CLUSTER_NAME }}"
+          echo "AKS_RESOURCE_GROUP: ${{ env.AKS_RESOURCE_GROUP }}"
+          if [ -z "${{ env.ACR_LOGIN_SERVER }}" ]; then
+            echo "Error: ACR_LOGIN_SERVER is empty"
+            exit 1
+          fi
 
 
       - name: Set up QEMU and Buildx
