@@ -134,7 +134,8 @@ jobs:
           terraform import -ignore-remote-version azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg || true
           terraform import -ignore-remote-version azurerm_container_registry.acr /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.ContainerRegistry/registries/mimusicacr || true
           terraform import -ignore-remote-version azurerm_storage_account.storage /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.Storage/storageAccounts/mimusicstorage || true
-          terraform import -ignore-remote-version azurerm_storage_container.music_container /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.Storage/storageAccounts/mimusicstorage/blobServices/default/containers/music-container || true
+          terraform import -ignore-remote-version azurerm_storage_container.music_container "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.Storage/storageAccounts/mimusicstorage/blobServices/default/containers/music-container" || true
+          terraform import -ignore-remote-version azurerm_log_analytics_workspace.law /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.OperationalInsights/workspaces/music-law || true
           terraform import -ignore-remote-version azurerm_kubernetes_cluster.aks /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg/providers/Microsoft.ContainerService/managedClusters/music-aks || true
 
           terraform apply -auto-approve
