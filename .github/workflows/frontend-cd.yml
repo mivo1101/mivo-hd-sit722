@@ -36,10 +36,21 @@ jobs:
           sed -i "s|_SONG_API_URL_|song-service-aks|g" frontend/main.js
           sed -i "s|_PLAYLIST_API_URL_|playlist-service-aks|g" frontend/main.js
 
+      - name: Login to ACR
+        run: az acr login --name ${{ secrets.ACR_LOGIN_SERVER }}
+      
+      - name: Build service images
+        run: |
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/frontend:latest ./frontend/
+
+      - name: Push service images to ACR
+        run: |
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/frontend:latest
+
       - name: Deploy Frontend to Production
         run: |
-          kubectl apply -f k8s/frontend.yaml -n production
-
+          kubectl set image deployment/frontend-aks frontend-container=${{ secrets.ACR_LOGIN_SERVER }}/frontend:latest -n production
+          
       - name: Logout from Azure
         run: az logout
         if: always()
