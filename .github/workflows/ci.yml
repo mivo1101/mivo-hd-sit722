@@ -138,12 +138,13 @@ jobs:
       
           terraform apply -auto-approve
 
-          echo "ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
-          echo "AKS_CLUSTER_NAME=$(terraform output -raw aks_cluster_name)" >> $GITHUB_ENV
-          echo "AKS_RESOURCE_GROUP=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
-          echo "STORAGE_ACCOUNT_NAME=$(terraform output -raw storage_account_name)" >> $GITHUB_ENV
-          echo "STORAGE_ACCOUNT_KEY=$(terraform output -raw storage_account_key)" >> $GITHUB_ENV
-          echo "STORAGE_CONTAINER_NAME=$(terraform output -raw storage_container_name)" >> $GITHUB_ENV
+          echo "ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server | tr -d '\r')" >> $GITHUB_ENV
+          echo "AKS_CLUSTER_NAME=$(terraform output -raw aks_cluster_name | tr -d '\r')" >> $GITHUB_ENV
+          echo "AKS_RESOURCE_GROUP=$(terraform output -raw resource_group_name | tr -d '\r')" >> $GITHUB_ENV
+          echo "STORAGE_ACCOUNT_NAME=$(terraform output -raw storage_account_name | tr -d '\r')" >> $GITHUB_ENV
+          echo "STORAGE_ACCOUNT_KEY=$(terraform output -raw storage_account_key | tr -d '\r')" >> $GITHUB_ENV
+          echo "STORAGE_CONTAINER_NAME=$(terraform output -raw storage_container_name | tr -d '\r')" >> $GITHUB_ENV
+
 
       - name: Set up QEMU and Buildx
         uses: docker/setup-buildx-action@v3
