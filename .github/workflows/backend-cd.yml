@@ -7,10 +7,27 @@ on:
     branches:
       - main
 
+  workflow_call:
+    outputs:
+      USER_API_IP:
+        description: User service external IP
+        value: ${{ jobs.deploy_backend.outputs.USER_API_IP }}
+      SONG_API_IP:
+        description: Song service external IP
+        value: ${{ jobs.deploy_backend.outputs.SONG_API_IP }}
+      PLAYLIST_API_IP:
+        description: Playlist service external IP
+        value: ${{ jobs.deploy_backend.outputs.PLAYLIST_API_IP }}
+
 jobs:
   deploy_backend:
     runs-on: ubuntu-latest
     environment: Production
+
+    outputs:
+      USER_API_IP: ${{ steps.get_user_ip.outputs.external_ip }}
+      SONG_API_IP: ${{ steps.get_song_ip.outputs.external_ip }}
+      PLAYLIST_API_IP: ${{ steps.get_playlist_ip.outputs.external_ip }}
 
     steps:
       - name: Checkout repository
@@ -40,11 +57,47 @@ jobs:
 
       - name: Wait for Backend LoadBalancer IPs
         run: |
-          echo "Waiting for LoadBalancer IPs..."
-          sleep 30
-          for service in user-service song-service playlist-service; do
-            kubectl get svc $service -n production
+          echo "Waiting for User, Song, Playlist LoadBalancer IPs (up to 5 minutes)..."
+          USER_IP=""
+          SONG_IP=""
+          PLAYLIST_IP=""
+          
+          for i in $(seq 1 60); do
+            echo "Attempt $i/60..."
+            USER_IP=$(kubectl get service user-service -n production -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+            SONG_IP=$(kubectl get service song-service -n production -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+            PLAYLIST_IP=$(kubectl get service playlist-service -n production -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+            if [[ -n "$USER_IP" && -n "$SONG_IP" && -n "$PLAYLIST_IP" ]]; then
+              echo "All backend LoadBalancer IPs assigned!"
+              echo "User Service IP: $USER_IP"
+              echo "Song Service IP: $SONG_IP"
+              echo "Playlist Service IP: $PLAYLIST_IP"
+              break
+            fi
+            sleep 5
           done
+
+          if [[ -z "$USER_IP" || -z "$SONG_IP" || -z "$PLAYLIST_IP" ]]; then
+            echo "Error: One or more LoadBalancer IPs not assigned after timeout."
+            exit 1
+          fi
+
+          echo "USER_IP=$USER_IP" >> $GITHUB_ENV
+          echo "SONG_IP=$SONG_IP" >> $GITHUB_ENV
+          echo "PLAYLIST_IP=$PLAYLIST_IP" >> $GITHUB_ENV
+
+      - name: Capture User Service IP
+        id: get_user_ip
+        run: echo "external_ip=${{ env.USER_IP }}" >> $GITHUB_OUTPUT
+
+      - name: Capture Song Service IP
+        id: get_song_ip
+        run: echo "external_ip=${{ env.SONG_IP }}" >> $GITHUB_OUTPUT
+
+      - name: Capture Playlist Service IP
+        id: get_playlist_ip
+        run: echo "external_ip=${{ env.PLAYLIST_IP }}" >> $GITHUB_OUTPUT
 
       - name: Logout from Azure
         run: az logout
