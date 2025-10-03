@@ -216,5 +216,3 @@ crash.log
 override.tf
 override.tf.json
 *.backup
-
-k8s/secrets.yaml
