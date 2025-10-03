@@ -131,6 +131,7 @@ jobs:
         run: |
           cd terraform
           terraform init
+          terraform import -ignore-remote-version azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/music-rg || true
           terraform apply -auto-approve
           echo "ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
           echo "AKS_CLUSTER_NAME=$(terraform output -raw aks_cluster_name)" >> $GITHUB_ENV
