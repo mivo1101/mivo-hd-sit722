@@ -72,6 +72,7 @@ jobs:
 
       - name: Terraform Init & Output
         run: |
+          cd terraform
           terraform init
           terraform apply -auto-approve
           echo "ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
