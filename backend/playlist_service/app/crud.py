@@ -1,23 +1,28 @@
-from pydantic import BaseModel
-from typing import List
+from sqlalchemy.orm import Session
+from . import models, schemas
 
-class SongBase(BaseModel):
-    id: int
-    title: str
-    artist: str
-    duration: str
+def create_playlist(db: Session, playlist: schemas.PlaylistCreate):
+    db_playlist = models.Playlist(name=playlist.name)
+    if playlist.song_ids:
+        db_songs = db.query(models.Song).filter(models.Song.id.in_(playlist.song_ids)).all()
+        db_playlist.songs = db_songs
+    db.add(db_playlist)
+    db.commit()
+    db.refresh(db_playlist)
+    return db_playlist
 
-    class Config:
-        orm_mode = True
+def get_playlist(db: Session, playlist_id: int):
+    return db.query(models.Playlist).filter(models.Playlist.id == playlist_id).first()
 
-class PlaylistCreate(BaseModel):
-    name: str
-    song_ids: List[int] = []  # IDs of songs to add
+def get_playlists(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Playlist).offset(skip).limit(limit).all()
 
-class Playlist(BaseModel):
-    id: int
-    name: str
-    songs: List[SongBase] = []
-
-    class Config:
-        orm_mode = True
+def add_songs_to_playlist(db: Session, playlist_id: int, song_ids: list[int]):
+    playlist = db.query(models.Playlist).filter(models.Playlist.id == playlist_id).first()
+    if not playlist:
+        return None
+    songs = db.query(models.Song).filter(models.Song.id.in_(song_ids)).all()
+    playlist.songs.extend(songs)
+    db.commit()
+    db.refresh(playlist)
+    return playlist
