@@ -1,6 +1,6 @@
 # .github/workflows/staging.yml
 
-name: Staging - Deploy Backend and Frontend to Staging
+name: Staging - Deploy Backend and Frontend to Staging Environment
 
 on:
   workflow_run:
