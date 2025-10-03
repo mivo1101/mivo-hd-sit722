@@ -64,9 +64,9 @@ jobs:
           
           for i in $(seq 1 60); do
             echo "Attempt $i/60..."
-            USER_IP=$(kubectl get service user-service -n production -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-            SONG_IP=$(kubectl get service song-service -n production -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-            PLAYLIST_IP=$(kubectl get service playlist-service -n production -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+            USER_IP=$(kubectl get service user-service-aks -n production -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+            SONG_IP=$(kubectl get service song-service-aks -n production -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+            PLAYLIST_IP=$(kubectl get service playlist-service-aks -n production -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
             if [[ -n "$USER_IP" && -n "$SONG_IP" && -n "$PLAYLIST_IP" ]]; then
               echo "All backend LoadBalancer IPs assigned!"
