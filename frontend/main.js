@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         try {
-            const res = await fetch(`http://4.237.221.167:8000/users/`, {
+            const res = await fetch(`${USER_API_BASE_URL}/users/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: username })
