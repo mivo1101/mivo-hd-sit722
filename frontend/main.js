@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const SONG_API_BASE_URL = `http://${SONG_API_IP}:8001`;
     const PLAYLIST_API_BASE_URL = `http://${PLAYLIST_API_IP}:8002`;
 
+
     // DOM ELEMENTS
     const messageBox = document.getElementById('message-box');
 
