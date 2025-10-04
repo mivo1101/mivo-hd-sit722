@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     // API ENDPOINTS
-    const USER_API_IP = '4.198.25.176';
+    const USER_API_IP = '4.237.221.167';
     const SONG_API_IP = '20.167.106.73';
     const PLAYLIST_API_IP = '20.167.82.84';
 
-    const USER_API_BASE_URL = `http://${USER_API_IP}/:8000`;
-    const SONG_API_BASE_URL = `http://20.167.106.73:8001`;
-    const PLAYLIST_API_BASE_URL = `http://20.167.82.84:8002`;
+    const USER_API_BASE_URL = `http://${USER_API_IP}:8000`;
+    const SONG_API_BASE_URL = `http://${SONG_API_IP}:8001`;
+    const PLAYLIST_API_BASE_URL = `http://${PLAYLIST_API_IP}:8002`;
 
     // DOM ELEMENTS
     const messageBox = document.getElementById('message-box');
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         try {
-            const res = await fetch(`${USER_API_BASE_URL}/users/`, {
+            const res = await fetch(`http://4.237.221.167:8000/users/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: username })
