@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: username })
             });
-            if (!res.ok) throw new Error('Failed to create user');
+            if (!res.ok) throw new Error(`Failed to create user with status: ${res.status}`);
             const data = await res.json();
             userNameDisplay.innerText = data.name;
             userNameDisplay2.innerText = data.name;
