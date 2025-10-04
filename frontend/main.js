@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // API ENDPOINTS
-    const USER_API_IP = '4.237.221.167';
-    const SONG_API_IP = '20.167.106.73';
-    const PLAYLIST_API_IP = '20.167.82.84';
+    const USER_API_IP = '20.167.106.149';
+    const SONG_API_IP = '20.227.117.25';
+    const PLAYLIST_API_IP = '4.254.50.117';
 
     const USER_API_BASE_URL = `http://${USER_API_IP}:8000`;
     const SONG_API_BASE_URL = `http://${SONG_API_IP}:8001`;
