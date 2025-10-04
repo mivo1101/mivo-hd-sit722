@@ -1,12 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // API ENDPOINTS
-    const USER_API_IP = '_USER_API_URL_';
-    const SONG_API_IP = '_SONG_API_URL_';
-    const PLAYLIST_API_IP = '_PLAYLIST_API_URL_';
-
-    const USER_API_BASE_URL = `http://${USER_API_IP}:8000`;
-    const SONG_API_BASE_URL = `http://${SONG_API_IP}:8001`;
-    const PLAYLIST_API_BASE_URL = `http://${PLAYLIST_API_IP}:8002`;
+    const USER_API_BASE_URL = window.USER_API_BASE_URL;
+    const SONG_API_BASE_URL = window.SONG_API_BASE_URL;
+    const PLAYLIST_API_BASE_URL = window.PLAYLIST_API_BASE_URL;
 
     // DOM ELEMENTS
     const messageBox = document.getElementById('message-box');
